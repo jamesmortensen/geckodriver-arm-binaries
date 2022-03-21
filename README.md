@@ -2,7 +2,7 @@
 
 NOTE: These are unofficial binaries. They are not provided by Mozilla but instead compiled and built independently. Use at your own risk. If you have concerns, please follow the steps below to build the binaries yourself.  See [geckodriver source code and license](#geckodriver-source-code-and-license) for more details.
 
-This repo contains the unofficial latest ARM64 binary of linux-arm64 geckodriver and instructions to build it on ARM64 hardware using a container image.
+This repo contains the [unofficial latest ARM64 binary of linux-arm64 geckodriver](https://github.com/jamesmortensen/geckodriver-arm-binaries/releases) and instructions to build it on ARM64 hardware using a container image.
 
 
 ## Build Container Image
