@@ -16,12 +16,6 @@ You may download the ones provided. Otherwise, see the below instructions to bui
 $ docker build -t local/geckodriver-arm64-builder:0.30.0 .
 ```
 
-If you're not on an arm64 platform or wish to build for another platform, such as armv7, you can use QEMU emulation to build the driver:
-
-```
-$ docker buildx build --platform linux/arm/v7 -t local/geckodriver-armv7-builder:0.30.0 .
-```
-
 ## Build geckodriver ARM64 binary
 
 ### Release build
