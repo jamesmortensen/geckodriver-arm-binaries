@@ -69,7 +69,7 @@ The binary is copied to $PWD/artifacts.  If you're using podman-machine or runni
 geckodriver is made available under the [Mozilla Public License](https://www.mozilla.org/en-US/MPL/2.0/) and is a product of Mozilla.
 
 Its source code can be found in [mozilla-central](https://hg.mozilla.org/mozilla-central/file/tip/testing/geckodriver) under testing/geckodriver.
-This unofficial GitHub repository is only used for building geckodriver for ARM64 and is not affiliated with Mozilla. See [mozilla/geckodriver](https://github.com/mozilla/geckodriver) for issue tracking and official Mozilla geckodriver releases.
+This unofficial GitHub repository is only used for building geckodriver for ARM and is not affiliated with Mozilla. See [mozilla/geckodriver](https://github.com/mozilla/geckodriver) for issue tracking and official Mozilla geckodriver releases.
 
 [source code]: https://hg.mozilla.org/mozilla-unified/file/tip/testing/geckodriver
 [Mozilla Public License]: https://www.mozilla.org/en-US/MPL/2.0/
