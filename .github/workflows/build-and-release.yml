@@ -1,0 +1,41 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    env:
+      GECKODRIVER_VERSION: "0.31.0"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: |
+        docker buildx use `docker buildx create`
+        docker run --rm -it --privileged aptman/qus -- -r
+        docker run --rm -it --privileged aptman/qus -s -- -p
+        docker buildx build --platform linux/arm/v7 -t local/geckodriver-armv7-builder .
+        docker buildx build --platform linux/arm64 -t local/geckodriver-arm64-builder .
+        docker run --rm -it --platform linux/arm/v7 -v $PWD/artifacts/armv7:/media/host -w /opt/geckodriver --name geckodriver-armv7-builder local/geckodriver-armv7-builder
+        docker run --rm -it --platform linux/arm64 -v $PWD/artifacts/arm64:/media/host -w /opt/geckodriver --name geckodriver-arm64-builder local/geckodriver-arm64-builder
+        go install github.com/github-release/github-release@v0.10.0
+        mv artifacts/armv7/geckodriver geckodriver
+        tar cvfz geckodriver-v$GECKODRIVER_VERSION-linux-armv7l.tar.gz geckodriver
+        md5sum geckodriver-v$GECKODRIVER_VERSION-linux-armv7l.tar.gz > geckodriver-v$GECKODRIVER_VERSION-linux-armv7l.tar.gz.md5
+        rm geckodriver
+        mv artifacts/arm64/geckodriver geckodriver
+        tar cvfz geckodriver-v$GECKODRIVER_VERSION-linux-aarch64.tar.gz geckodriver
+        md5sum geckodriver-v$GECKODRIVER_VERSION-linux-aarch64.tar.gz > geckodriver-v$GECKODRIVER_VERSION-linux-aarch64.tar.gz.md5
+        echo "NOTE:  This is an unofficial arm64 build and armhf of geckodriver v$GECKODRIVER_VERSION.  These binaries are compiled and built independently and are not provided by Mozilla." > release_notes.md  
+        echo "" >> release_notes.md
+        echo "For details of what is contained in this release, see the [official geckodriver release notes](https://github.com/mozilla/geckodriver/releases)." >> release_notes.md
+        export RELEASE_TAG=$GECKODRIVER_VERSION
+        github-release release --tag $RELEASE_TAG --name $RELEASE_TAG --description "`cat release_notes.md`"
+        github-release upload --tag $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-aarch64.tar.gz
+        github-release upload --tag $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-aarch64.tar.gz.md5
+        github-release upload --tag $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-armv7l.tar.gz
+        github-release upload --tag $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-armv7l.tar.gz.md5
