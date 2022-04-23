@@ -41,6 +41,7 @@ jobs:
         echo "" >> release_notes.md
         echo "For details of what is contained in this release, see the [official geckodriver release notes](https://github.com/mozilla/geckodriver/releases)." >> release_notes.md
     - name: Publish releases with binaries and md5 hashes
+      run: |
         export RELEASE_TAG=$GECKODRIVER_VERSION
         go install github.com/github-release/github-release@v0.10.0
         github-release release --tag $RELEASE_TAG --name $RELEASE_TAG --description "`cat release_notes.md`"
