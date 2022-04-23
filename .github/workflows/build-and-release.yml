@@ -20,8 +20,8 @@ jobs:
         docker run --rm --privileged aptman/qus -s -- -p
     - name: Build the Docker image build environments for each architecture
       run: |
-        docker buildx build --platform linux/arm/v7 -t local/geckodriver-armv7-builder .
-        docker buildx build --platform linux/arm64 -t local/geckodriver-arm64-builder .
+        docker buildx build --load --platform linux/arm/v7 -t local/geckodriver-armv7-builder .
+        docker buildx build --load --platform linux/arm64 -t local/geckodriver-arm64-builder .
     - name: Build the geckodriver binaries in the artifacts directory
       run: |
         docker run --rm --platform linux/arm/v7 -v $PWD/artifacts/armv7:/media/host -w /opt/geckodriver --name geckodriver-armv7-builder local/geckodriver-armv7-builder
