@@ -61,8 +61,10 @@ jobs:
         # Let faster job set the release notes
         if [ "$VERSION" != "v$GECKODRIVER_VERSION" ]; then
             echo "Set release notes"
-            ~/go/bin/github-release release -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name $RELEASE_TAG --description "`cat release_notes.md`"
+            ~/go/bin/github-release release -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name $RELEASE_TAG --description "`cat release_notes.md`" --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz.md5
+        else
+            echo "Upload files..."
+            #~/go/bin/github-release upload -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz
+            #~/go/bin/github-release upload -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz.md5
         fi
-        echo "Upload files..."
-        ~/go/bin/github-release upload -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz
-        ~/go/bin/github-release upload -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz.md5
+        
