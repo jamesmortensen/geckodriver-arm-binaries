@@ -47,6 +47,10 @@ jobs:
       run: |
         export RELEASE_TAG=$GECKODRIVER_VERSION
         go install github.com/github-release/github-release@v0.10.0
-        github-release release --tag $RELEASE_TAG --name $RELEASE_TAG --description "`cat release_notes.md`"
-        github-release upload --tag $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz
-        github-release upload --tag $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz.md5
+        VERSION=`go/bin/github-release info -u jamesmortensen -r geckodriver-arm-binaries | grep $GECKODRIVER_VERSION | head -n 1 | awk '{print $2}'`
+        # Let faster job set the release notes
+        if [ "$VERSION" != "v$GECKODRIVER_VERSION" ]; then
+            go/bin/github-release release --tag $RELEASE_TAG --name $RELEASE_TAG --description "`cat release_notes.md`"
+        fi
+        go/bin/github-release upload --tag $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz
+        go/bin/github-release upload --tag $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz.md5
