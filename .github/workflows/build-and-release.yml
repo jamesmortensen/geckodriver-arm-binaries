@@ -57,6 +57,7 @@ jobs:
         export RELEASE_TAG=$GECKODRIVER_VERSION
         go install github.com/github-release/github-release@v0.10.0
         VERSION=`~/go/bin/github-release info -u jamesmortensen -r geckodriver-arm-binaries | grep $GECKODRIVER_VERSION | head -n 1 | awk '{print $2}'`
+        echo "VERSION set to $VERSION"
         # Let faster job set the release notes
         if [ "$VERSION" != "v$GECKODRIVER_VERSION" ]; then
             echo "Set release notes"
