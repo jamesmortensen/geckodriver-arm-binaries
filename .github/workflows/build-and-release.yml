@@ -16,16 +16,16 @@ jobs:
     - name: Initialize BuildKit and Register arm64 and armv7
       run: |
         docker buildx use `docker buildx create`
-        docker run --rm -it --privileged aptman/qus -- -r
-        docker run --rm -it --privileged aptman/qus -s -- -p
+        docker run --rm --privileged aptman/qus -- -r
+        docker run --rm --privileged aptman/qus -s -- -p
     - name: Build the Docker image build environments for each architecture
       run: |
-        docker buildx build --platform linux/arm/v7 -t local/geckodriver-armv7-builder .
-        docker buildx build --platform linux/arm64 -t local/geckodriver-arm64-builder .
+        docker buildx build --load --platform linux/arm/v7 -t local/geckodriver-armv7-builder .
+        docker buildx build --load --platform linux/arm64 -t local/geckodriver-arm64-builder .
     - name: Build the geckodriver binaries in the artifacts directory
       run: |
-        docker run --rm -it --platform linux/arm/v7 -v $PWD/artifacts/armv7:/media/host -w /opt/geckodriver --name geckodriver-armv7-builder local/geckodriver-armv7-builder
-        docker run --rm -it --platform linux/arm64 -v $PWD/artifacts/arm64:/media/host -w /opt/geckodriver --name geckodriver-arm64-builder local/geckodriver-arm64-builder
+        docker run --rm --platform linux/arm/v7 -v $PWD/artifacts/armv7:/media/host -w /opt/geckodriver --name geckodriver-armv7-builder local/geckodriver-armv7-builder
+        docker run --rm --platform linux/arm64 -v $PWD/artifacts/arm64:/media/host -w /opt/geckodriver --name geckodriver-arm64-builder local/geckodriver-arm64-builder
     - name: Package up the binaries in a tar.gz and calculate md5 hashes
       run: |
         mv artifacts/armv7/geckodriver geckodriver
@@ -41,6 +41,7 @@ jobs:
         echo "" >> release_notes.md
         echo "For details of what is contained in this release, see the [official geckodriver release notes](https://github.com/mozilla/geckodriver/releases)." >> release_notes.md
     - name: Publish releases with binaries and md5 hashes
+      run: |
         export RELEASE_TAG=$GECKODRIVER_VERSION
         go install github.com/github-release/github-release@v0.10.0
         github-release release --tag $RELEASE_TAG --name $RELEASE_TAG --description "`cat release_notes.md`"
