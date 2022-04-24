@@ -13,7 +13,7 @@ You may download the ones provided. Otherwise, see the below instructions to bui
 ## Build Container Image
 
 ```
-$ docker build -t local/geckodriver-arm64-builder:0.30.0 .
+$ docker build --build-arg GECKODRIVER_VERSION=0.31.0 -t local/geckodriver-arm-builder .
 ```
 
 ## Build geckodriver ARM64 binary
@@ -21,13 +21,13 @@ $ docker build -t local/geckodriver-arm64-builder:0.30.0 .
 ### Release build
 
 ```
-$ docker run --rm -it -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-arm64-builder local/geckodriver-arm64-builder:0.30.0
+$ docker run --rm -it -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-arm-builder local/geckodriver-arm-builder
 ```
 
 ### Debug build
 
 ```
-$ docker run --rm -it -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-arm64-builder local/geckodriver-arm64-builder:0.30.0 bash -c "sh build-geckodriver-arm64.sh debug"
+$ docker run --rm -it -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-arm-builder local/geckodriver-arm-builder bash -c "sh build-geckodriver-arm.sh debug"
 ```
 
 ## Building with QEMU emulation
@@ -49,13 +49,13 @@ $ docker run --rm -it --privileged aptman/qus -s -- -p
 Then, build the container image with buildx:
 
 ```
-$ docker buildx build --platform linux/arm/v7 -t local/geckodriver-armv7-builder:0.30.0 .
+$ docker buildx build --platform linux/arm/v7 --build-arg GECKODRIVER_VERSION=0.31.0 -t local/geckodriver-arm-builder .
 ```
 
 Then build the geckodriver binary. Here's an example building geckodriver for armhf with QEMU:
 
 ```
-docker run --rm -it --platform linux/arm/v7 -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-armv7-builder local/geckodriver-armv7-builder:0.30.0
+docker run --rm -it --platform linux/arm/v7 -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-arm-builder local/geckodriver-arm-builder
 ```
 
 

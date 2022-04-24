@@ -28,7 +28,7 @@ jobs:
         fi
     - name: Build the Docker image build environment
       run: |
-        docker buildx build --load --platform $PLATFORM -t local/geckodriver-arm-builder .
+        docker buildx build --load --platform $PLATFORM --build-arg GECKODRIVER_VERSION=$GECKODRIVER_VERSION -t local/geckodriver-arm-builder .
     - name: Build the geckodriver binaries in the artifacts directory
       run: |
         docker run --rm --platform $PLATFORM -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-arm-builder local/geckodriver-arm-builder
