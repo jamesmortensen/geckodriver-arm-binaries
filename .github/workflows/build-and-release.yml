@@ -22,9 +22,9 @@ jobs:
         docker run --rm --privileged aptman/qus -- -r
         docker run --rm --privileged aptman/qus -s -- -p
         if [ "${{ matrix.arch }}" == "armv7l" ]; then
-            echo "export PLATFORM=linux/arm/v7" >> $GITHUB_ENV
+            echo "PLATFORM=linux/arm/v7" >> $GITHUB_ENV
         elif [ "${{ matrix.arch }}" == "aarch64" ]; then
-            echo "export PLATFORM=linux/arm64" >> $GITHUB_ENV
+            echo "PLATFORM=linux/arm64" >> $GITHUB_ENV
         fi
     - name: Build the Docker image build environment
       run: |
