@@ -24,7 +24,7 @@ jobs:
         docker run --rm --privileged aptman/qus -s -- -p
         if [ "$ARCH" == "armv7l" ]; then
             echo "PLATFORM=linux/arm/v7" >> $GITHUB_ENV
-        elif [ "${{ matrix.arch }}" == "aarch64" ]; then
+        elif [ "$ARCH" == "aarch64" ]; then
             echo "PLATFORM=linux/arm64" >> $GITHUB_ENV
         fi
 #    - name: Build the Docker image build environment
@@ -44,7 +44,7 @@ jobs:
         mv geckodriver artifacts/
         mv artifacts/geckodriver geckodriver
         tar cvfz geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz geckodriver
-        md5sum geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz > geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz.md5
+        md5sum geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz > geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
     - name: Generate release notes
       run: |
         echo "NOTE:  This is an unofficial arm64 build and armhf of geckodriver v$GECKODRIVER_VERSION.  These binaries are compiled and built independently and are not provided by Mozilla." > release_notes.md  
@@ -65,6 +65,6 @@ jobs:
             sleep 4
         fi
         echo "Upload files..."
-        ~/go/bin/github-release upload -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz
-        ~/go/bin/github-release upload -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name $RELEASE_TAG --file geckodriver-v$GECKODRIVER_VERSION-linux-${{ matrix.arch }}.tar.gz.md5
+        ~/go/bin/github-release upload -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz --file geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
+        ~/go/bin/github-release upload -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5 --file geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
         
