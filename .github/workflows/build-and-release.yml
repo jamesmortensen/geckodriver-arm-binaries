@@ -27,21 +27,15 @@ jobs:
         elif [ "$ARCH" == "aarch64" ]; then
             echo "PLATFORM=linux/arm64" >> $GITHUB_ENV
         fi
-#    - name: Build the Docker image build environment
-#      run: |
-#        docker buildx build --load --platform $PLATFORM --build-arg GECKODRIVER_VERSION=$GECKODRIVER_VERSION -t local/geckodriver-arm-builder .
-#    - name: Build the geckodriver binaries in the artifacts directory
-#      run: |
-#        docker run --rm --platform $PLATFORM -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-arm-builder local/geckodriver-arm-builder
+    - name: Build the Docker image build environment
+      run: |
+        docker buildx build --load --platform $PLATFORM --build-arg GECKODRIVER_VERSION=$GECKODRIVER_VERSION -t local/geckodriver-arm-builder .
+    - name: Build the geckodriver binaries in the artifacts directory
+      run: |
+        docker run --rm --platform $PLATFORM -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-arm-builder local/geckodriver-arm-builder
     - name: Package up the binaries in a tar.gz and calculate md5 hashes
       run: |
-        echo $ARCH
-        wget https://github.com/jamesmortensen/geckodriver-arm-binaries/releases/download/v0.30.0/geckodriver-v0.30.0-linux-aarch64.tar.gz
-        wget https://github.com/jamesmortensen/geckodriver-arm-binaries/releases/download/v0.30.0/geckodriver-v0.30.0-linux-armv7l.tar.gz
-        mkdir artifacts
         sudo chown -R runner:runner artifacts
-        tar xvfz geckodriver-v0.30.0-linux-aarch64.tar.gz
-        mv geckodriver artifacts/
         mv artifacts/geckodriver geckodriver
         tar cvfz geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz geckodriver
         md5sum geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz > geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
