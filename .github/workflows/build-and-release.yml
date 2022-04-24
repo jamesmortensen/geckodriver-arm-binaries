@@ -36,6 +36,7 @@ jobs:
       run: |
         wget https://github.com/jamesmortensen/geckodriver-arm-binaries/releases/download/v0.30.0/geckodriver-v0.30.0-linux-aarch64.tar.gz
         wget https://github.com/jamesmortensen/geckodriver-arm-binaries/releases/download/v0.30.0/geckodriver-v0.30.0-linux-armv7l.tar.gz
+        mkdir artifacts
         sudo chown -R runner:runner artifacts
         tar xvfz geckodriver-v0.30.0-linux-aarch64.tar.gz
         mv geckodriver artifacts/
