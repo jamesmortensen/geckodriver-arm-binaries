@@ -28,6 +28,7 @@ jobs:
         docker run --rm --platform linux/arm64 -v $PWD/artifacts/arm64:/media/host -w /opt/geckodriver --name geckodriver-arm64-builder local/geckodriver-arm64-builder
     - name: Package up the binaries in a tar.gz and calculate md5 hashes
       run: |
+        sudo chown -R runner:runner artifacts 
         mv artifacts/armv7/geckodriver geckodriver
         tar cvfz geckodriver-v$GECKODRIVER_VERSION-linux-armv7l.tar.gz geckodriver
         md5sum geckodriver-v$GECKODRIVER_VERSION-linux-armv7l.tar.gz > geckodriver-v$GECKODRIVER_VERSION-linux-armv7l.tar.gz.md5
