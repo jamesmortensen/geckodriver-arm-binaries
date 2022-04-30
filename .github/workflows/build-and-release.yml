@@ -43,18 +43,22 @@ jobs:
         echo "NOTE:  This is an unofficial arm64 build and armhf of geckodriver v$GECKODRIVER_VERSION.  These binaries are compiled and built independently and are not provided by Mozilla." > release_notes.md  
         echo "" >> release_notes.md
         echo "For details of what is contained in this release, see the [official geckodriver release notes](https://github.com/mozilla/geckodriver/releases)." >> release_notes.md
-    - name: Upload artifacts with binaries and md5 hashes
+    - name: Upload artifact binary
       if: ${{ github.ref != 'refs/heads/master' }}
       uses: actions/upload-artifact@v3
       with:
         name: geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
         path: |
           geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
+    - name: Upload artifact md5
+      if: ${{ github.ref != 'refs/heads/master' }}
       uses: actions/upload-artifact@v3
       with:
         name: geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
         path: |
           geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
+    - name: Upload artifact release_notes.md
+      if: ${{ github.ref != 'refs/heads/master' }}
       uses: actions/upload-artifact@v3
       with:
         name: release_notes.md
