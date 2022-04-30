@@ -31,7 +31,7 @@ jobs:
         docker build --build-arg GECKODRIVER_VERSION=$GECKODRIVER_VERSION -t local/geckodriver-cross-builder .
     - name: Build the geckodriver binaries in the artifacts directory
       run: |    
-        docker run -it -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-cross-builder local/geckodriver-cross-builder bash -c "sh build-geckodriver-arm.sh release `echo $ARCH_TUPLE`"
+        docker run -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-cross-builder local/geckodriver-cross-builder bash -c "sh build-geckodriver-arm.sh release `echo $ARCH_TUPLE`"
     - name: Package up the binaries in a tar.gz and calculate md5 hashes
       run: |
         sudo chown -R runner:runner artifacts
