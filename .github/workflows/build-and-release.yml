@@ -46,17 +46,17 @@ jobs:
         echo "For details of what is contained in this release, see the [official geckodriver release notes](https://github.com/mozilla/geckodriver/releases)." >> release_notes.md
     - name: Upload artifacts with binaries and md5 hashes
       if: ${{ github.ref != 'refs/heads/master' }}
-      uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
           path: |
             geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
-      uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
           path: |
             geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
-      uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v3
         with:
           name: release_notes.md
           path: |
