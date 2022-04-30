@@ -1,10 +1,23 @@
 #!/bin/bash
-TARGET=${1:-release}
+TYPE=${1:-release}
+ARCH_TUPLE=$2
 
-if [ "$TARGET" = "release" ]; then
-    cargo build --release
-else
-    cargo build
+# Pass as 2nd argument: aarch64-unknown-linux-gnu or armv7-unknown-linux-gnueabihf
+# else if blank then build for host architecture
+if [ -n "$ARCH_TUPLE" ]; then
+    TARGET="--target $ARCH_TUPLE"
+    . $HOME/.cargo/env
+    rustup target add $ARCH_TUPLE
 fi
 
-cp /opt/geckodriver/target/$TARGET/geckodriver /media/host
+if [ "$TYPE" = "release" ]; then
+    cargo build --release $TARGET
+else
+    cargo build $TARGET
+fi
+
+if [ -z "$ARCH_TUPLE" ]; then
+    cp /opt/geckodriver/target/$TYPE/geckodriver /media/host
+else
+    cp /opt/geckodriver/target/$ARCH_TUPLE/$TYPE/geckodriver /media/host
+fi
