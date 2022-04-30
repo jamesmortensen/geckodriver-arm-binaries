@@ -29,7 +29,6 @@ jobs:
     - name: Build the Docker image build environment
       run: |
         docker build --build-arg GECKODRIVER_VERSION=$GECKODRIVER_VERSION -t local/geckodriver-cross-builder .
-        #docker buildx build --load --platform $PLATFORM --build-arg GECKODRIVER_VERSION=$GECKODRIVER_VERSION -t local/geckodriver-arm-builder .
     - name: Build the geckodriver binaries in the artifacts directory
       run: |    
         docker run -it -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-cross-builder local/geckodriver-cross-builder bash -c "sh build-geckodriver-arm.sh release `echo $ARCH_TUPLE`"
@@ -46,21 +45,21 @@ jobs:
         echo "For details of what is contained in this release, see the [official geckodriver release notes](https://github.com/mozilla/geckodriver/releases)." >> release_notes.md
     - name: Upload artifacts with binaries and md5 hashes
       if: ${{ github.ref != 'refs/heads/master' }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
-          path: |
-            geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
-      - uses: actions/upload-artifact@v3
-        with:
-          name: geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
-          path: |
-            geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
-      - uses: actions/upload-artifact@v3
-        with:
-          name: release_notes.md
-          path: |
-            release_notes.md
+      uses: actions/upload-artifact@v3
+      with:
+        name: geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
+        path: |
+          geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
+      uses: actions/upload-artifact@v3
+      with:
+        name: geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
+        path: |
+          geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
+      uses: actions/upload-artifact@v3
+      with:
+        name: release_notes.md
+        path: |
+          release_notes.md
     - name: Publish releases with binaries and md5 hashes
       if: ${{ github.ref == 'refs/heads/master' }}
       env:
