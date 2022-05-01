@@ -47,16 +47,16 @@ jobs:
       if: ${{ github.ref != 'refs/heads/master' }}
       uses: actions/upload-artifact@v3
       with:
-        name: geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
+        name: geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz
         path: |
-          geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
+          geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz
     - name: Upload artifact md5
       if: ${{ github.ref != 'refs/heads/master' }}
       uses: actions/upload-artifact@v3
       with:
-        name: geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
+        name: geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz.md5
         path: |
-          geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
+          geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz.md5
     - name: Upload artifact release_notes.md
       if: ${{ github.ref != 'refs/heads/master' }}
       uses: actions/upload-artifact@v3
