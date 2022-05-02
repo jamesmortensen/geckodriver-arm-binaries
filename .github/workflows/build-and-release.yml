@@ -21,17 +21,17 @@ jobs:
       run: |
         if [ "$ARCH" == "armv7l" ]; then
             echo "PLATFORM=linux/arm/v7" >> $GITHUB_ENV
-            echo "ARCH_TUPLE=armv7-unknown-linux-gnueabihf" >> $GITHUB_ENV
+            echo "HOST_TRIPLE=armv7-unknown-linux-gnueabihf" >> $GITHUB_ENV
         elif [ "$ARCH" == "aarch64" ]; then
             echo "PLATFORM=linux/arm64" >> $GITHUB_ENV
-            echo "ARCH_TUPLE=aarch64-unknown-linux-gnu" >> $GITHUB_ENV
+            echo "HOST_TRIPLE=aarch64-unknown-linux-gnu" >> $GITHUB_ENV
         fi
     - name: Build the Docker image build environment
       run: |
         docker build --build-arg GECKODRIVER_VERSION=$GECKODRIVER_VERSION -t local/geckodriver-cross-builder .
     - name: Build the geckodriver binaries in the artifacts directory
       run: |    
-        docker run -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-cross-builder local/geckodriver-cross-builder bash -c "sh build-geckodriver-arm.sh release `echo $ARCH_TUPLE`"
+        docker run -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-cross-builder local/geckodriver-cross-builder bash -c "sh build-geckodriver-arm.sh release `echo $HOST_TRIPLE`"
     - name: Package up the binaries in a tar.gz and calculate md5 hashes
       run: |
         sudo chown -R runner:runner artifacts
