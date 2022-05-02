@@ -58,8 +58,19 @@ Then build the geckodriver binary. Here's an example building geckodriver for ar
 docker run --rm -it --platform linux/arm/v7 -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-arm-builder local/geckodriver-arm-builder
 ```
 
+## Building with cross-compilation
 
-### Additional information
+It's also possible to build a geckodriver binary on one host architecture that targets another architecture. This information is adapted from Mozilla's developer documentation on [Self Serving an ARM build](https://firefox-source-docs.mozilla.org/testing/geckodriver/ARM.html).
+
+### armv7l/armhf
+
+
+### aarch64/arm64
+
+
+
+
+## Additional information
 
 The binary is copied to $PWD/artifacts.  If you're using podman-machine or running Docker in a VM, then you'll need to copy the binary from Podman or the VM via scp or by mounting a shared volume.
 
