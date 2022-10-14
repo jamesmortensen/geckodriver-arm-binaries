@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, cross-compilation ]
   pull_request:
     branches: [ master ]
 
@@ -12,27 +12,26 @@ jobs:
       matrix:
         arch: [armv7l, aarch64]
     env:
-      GECKODRIVER_VERSION: "0.31.0"
+      GECKODRIVER_VERSION: "0.32.0"
       ARCH: ${{ matrix.arch }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Initialize BuildKit and Register arm architectures
+    - name: Set environment variables
       run: |
-        docker buildx use `docker buildx create`
-        docker run --rm --privileged aptman/qus -- -r
-        docker run --rm --privileged aptman/qus -s -- -p
         if [ "$ARCH" == "armv7l" ]; then
             echo "PLATFORM=linux/arm/v7" >> $GITHUB_ENV
+            echo "HOST_TRIPLE=armv7-unknown-linux-gnueabihf" >> $GITHUB_ENV
         elif [ "$ARCH" == "aarch64" ]; then
             echo "PLATFORM=linux/arm64" >> $GITHUB_ENV
+            echo "HOST_TRIPLE=aarch64-unknown-linux-gnu" >> $GITHUB_ENV
         fi
     - name: Build the Docker image build environment
       run: |
-        docker buildx build --load --platform $PLATFORM --build-arg GECKODRIVER_VERSION=$GECKODRIVER_VERSION -t local/geckodriver-arm-builder .
+        docker build --build-arg GECKODRIVER_VERSION=$GECKODRIVER_VERSION -t local/geckodriver-cross-builder .
     - name: Build the geckodriver binaries in the artifacts directory
-      run: |
-        docker run --rm --platform $PLATFORM -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-arm-builder local/geckodriver-arm-builder
+      run: |    
+        docker run -v $PWD/artifacts:/media/host -w /opt/geckodriver --name geckodriver-cross-builder local/geckodriver-cross-builder bash -c "sh build-geckodriver-arm.sh release `echo $HOST_TRIPLE`"
     - name: Package up the binaries in a tar.gz and calculate md5 hashes
       run: |
         sudo chown -R runner:runner artifacts
@@ -44,7 +43,29 @@ jobs:
         echo "NOTE:  This is an unofficial arm64 build and armhf of geckodriver v$GECKODRIVER_VERSION.  These binaries are compiled and built independently and are not provided by Mozilla." > release_notes.md  
         echo "" >> release_notes.md
         echo "For details of what is contained in this release, see the [official geckodriver release notes](https://github.com/mozilla/geckodriver/releases)." >> release_notes.md
+    - name: Upload artifact binary
+      if: ${{ github.ref != 'refs/heads/master' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz
+        path: |
+          geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz
+    - name: Upload artifact md5
+      if: ${{ github.ref != 'refs/heads/master' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz.md5
+        path: |
+          geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz.md5
+    - name: Upload artifact release_notes.md
+      if: ${{ github.ref != 'refs/heads/master' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: release_notes.md
+        path: |
+          release_notes.md
     - name: Publish releases with binaries and md5 hashes
+      if: ${{ github.ref == 'refs/heads/master' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
