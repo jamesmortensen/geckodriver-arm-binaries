@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master, cross-compilation ]
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -44,28 +44,25 @@ jobs:
         echo "" >> release_notes.md
         echo "For details of what is contained in this release, see the [official geckodriver release notes](https://github.com/mozilla/geckodriver/releases)." >> release_notes.md
     - name: Upload artifact binary
-      if: ${{ github.ref != 'refs/heads/master' }}
       uses: actions/upload-artifact@v3
       with:
         name: geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz
         path: |
           geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz
     - name: Upload artifact md5
-      if: ${{ github.ref != 'refs/heads/master' }}
       uses: actions/upload-artifact@v3
       with:
         name: geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz.md5
         path: |
           geckodriver-v${{ env.GECKODRIVER_VERSION }}-linux-${{ env.ARCH }}.tar.gz.md5
     - name: Upload artifact release_notes.md
-      if: ${{ github.ref != 'refs/heads/master' }}
       uses: actions/upload-artifact@v3
       with:
         name: release_notes.md
         path: |
           release_notes.md
     - name: Publish releases with binaries and md5 hashes
-      if: ${{ github.ref == 'refs/heads/master' }}
+      if: ${{ github.ref == 'refs/heads/master' && contains(toJson(github.event.commits), '[deploy]') == true }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
