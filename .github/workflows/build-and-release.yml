@@ -5,6 +5,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -68,15 +69,15 @@ jobs:
       run: |
         export RELEASE_TAG=$GECKODRIVER_VERSION
         go install github.com/github-release/github-release@v0.10.0
-        VERSION=`~/go/bin/github-release info -u jamesmortensen -r geckodriver-arm-binaries | grep $GECKODRIVER_VERSION | head -n 1 | awk '{print $2}'`
+        VERSION=`~/go/bin/github-release info -u $GITHUB_REPOSITORY_OWNER -r geckodriver-arm-binaries | grep $GECKODRIVER_VERSION | head -n 1 | awk '{print $2}'`
         echo "VERSION set to $VERSION"
         # Let faster job set the release notes
         if [ "$VERSION" != "v$GECKODRIVER_VERSION" ]; then
             echo "Set release notes"
-            ~/go/bin/github-release release -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name $RELEASE_TAG --description "`cat release_notes.md`"
+            ~/go/bin/github-release release -u $GITHUB_REPOSITORY_OWNER -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name $RELEASE_TAG --description "`cat release_notes.md`"
             sleep 4
         fi
         echo "Upload files..."
-        ~/go/bin/github-release upload -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz --file geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
-        ~/go/bin/github-release upload -u jamesmortensen -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5 --file geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
+        ~/go/bin/github-release upload -u $GITHUB_REPOSITORY_OWNER -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz --file geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz
+        ~/go/bin/github-release upload -u $GITHUB_REPOSITORY_OWNER -r geckodriver-arm-binaries --tag v$RELEASE_TAG --name geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5 --file geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
         
