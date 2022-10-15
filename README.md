@@ -2,6 +2,12 @@
 
 NOTE: These are unofficial binaries. They are not provided by Mozilla but instead compiled and built independently. Use at your own risk. If you have concerns, please follow the steps below to build the binaries yourself.  See [geckodriver source code and license](#geckodriver-source-code-and-license) for more details.
 
+**NOTE: Mozilla has released geckodriver for linux-aarch64. Please use their official aarch64 release instead of the unofficial one here. In the meantime, I have build linux-aarch64 to help make the transition easier. I will continue to build geckodriver linux-armv7.**
+
+**See [mozilla/geckodriver releases](https://github.com/mozilla/geckodriver/releases) to download the official linux-aarch64 geckodriver binary.**
+
+-----
+
 This repo contains the following unofficial geckodriver arm binaries:
 
 - [unofficial latest ARM binaries of linux geckodriver](https://github.com/jamesmortensen/geckodriver-arm-binaries/releases) 
@@ -13,7 +19,7 @@ You may download the ones provided. Otherwise, see the below instructions to bui
 ## Build Container Image
 
 ```
-$ docker build --build-arg GECKODRIVER_VERSION=0.31.0 -t local/geckodriver-arm-builder .
+$ docker build --build-arg GECKODRIVER_VERSION=0.32.0 -t local/geckodriver-arm-builder .
 ```
 
 ## Build geckodriver ARM64 binary
@@ -49,7 +55,7 @@ $ docker run --rm -it --privileged aptman/qus -s -- -p
 Then, build the container image with buildx:
 
 ```
-$ docker buildx build --platform linux/arm/v7 --build-arg GECKODRIVER_VERSION=0.31.0 -t local/geckodriver-arm-builder .
+$ docker buildx build --platform linux/arm/v7 --build-arg GECKODRIVER_VERSION=0.32.0 -t local/geckodriver-arm-builder .
 ```
 
 Then build the geckodriver binary. Here's an example building geckodriver for armhf with QEMU:
@@ -64,11 +70,65 @@ It's also possible to build a geckodriver binary on one host architecture that t
 
 ### armv7l/armhf
 
+If you don’t have Rust installed:
+```
+# curl https://sh.rustup.rs -sSf | sh
+```
+
+Install cross-compiler toolchain:
+```
+# apt install gcc-arm-linux-gnueabihf libc6-armhf-cross libc6-dev-armhf-cross
+```
+
+Create a new shell, or to reuse the existing shell:
+```
+source $HOME/.cargo/env
+```
+
+Install rustc target toolchain:
+```
+% rustup target install armv7-unknown-linux-gnueabihf
+```
+
+Put this in testing/geckodriver/.cargo/config:
+```
+[target.armv7-unknown-linux-gnueabihf]
+linker = "arm-linux-gnueabihf-gcc"
+```
+
+Build geckodriver from testing/geckodriver:
+```
+% cd testing/geckodriver
+% cargo build --release --target armv7-unknown-linux-gnueabihf
+```
 
 ### aarch64/arm64
 
+Install cross-compiler toolchain:
+```
+$ apt install gcc-aarch64-linux-gnu libc6-arm64-cross libc6-dev-arm64-cross
+```
 
+Create a new shell, or to reuse the existing shell:
+```
+$ source $HOME/.cargo/env
+```
 
+Install rustc target toolchain:
+```
+$ rustup target install aarch64-unknown-linux-gnu
+```
+
+Put this in testing/geckodriver/.cargo/config:
+```
+[target.aarch64-unknown-linux-gnu]
+linker = "aarch64-linux-gnu-gcc"
+```
+
+Build geckodriver from testing/geckodriver:
+```
+$ cargo build --release --target aarch64-unknown-linux-gnu
+```
 
 ## Additional information
 
