@@ -41,7 +41,9 @@ jobs:
         md5sum geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz > geckodriver-v$GECKODRIVER_VERSION-linux-$ARCH.tar.gz.md5
     - name: Generate release notes
       run: |
-        echo "NOTE:  This is an unofficial arm64 build and armhf of geckodriver v$GECKODRIVER_VERSION.  These binaries are compiled and built independently and are not provided by Mozilla." > release_notes.md  
+        echo "NOTE:  This is an unofficial arm64 build and armhf of geckodriver v$GECKODRIVER_VERSION.  These binaries are compiled and built independently and are not provided by Mozilla." > release_notes.md
+        echo "" >> release_notes.md
+        echo "**NOTE: Mozilla has released geckodriver for linux-aarch64. Please use their official release instead of the unofficial one here. In the meantime, I have build linux-aarch64 to help make the transition easier. I will continue to build geckodriver linux-armv7.**" >> release_notes.md
         echo "" >> release_notes.md
         echo "For details of what is contained in this release, see the [official geckodriver release notes](https://github.com/mozilla/geckodriver/releases)." >> release_notes.md
     - name: Upload artifact binary
