@@ -13,7 +13,7 @@ jobs:
       matrix:
         arch: [armv7l, aarch64]
     env:
-      GECKODRIVER_VERSION: "0.32.1"
+      GECKODRIVER_VERSION: "0.32.2"
       ARCH: ${{ matrix.arch }}
     runs-on: ubuntu-latest
     steps:
